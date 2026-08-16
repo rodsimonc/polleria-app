@@ -1,0 +1,17 @@
+# Blueprint de Render (pollería). New + -> Blueprint -> conectá este repo.
+# Nota: el plan free no tiene disco persistente; la base SQLite se reinicia en
+# cada arranque en frío. Para datos permanentes: disco pago o PostgreSQL.
+services:
+  - type: web
+    name: polleria-online
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: TRUST_PROXY
+        value: "true"
