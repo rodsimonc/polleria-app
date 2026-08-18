@@ -1,0 +1,21 @@
+{
+  "name": "polleria-en",
+  "version": "1.0.0",
+  "description": "Online poultry shop: store with products and prices, customer registration, orders with shipping, and an admin panel. Node/Express + SQLite + JWT.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/db/seed.js",
+    "gen-cert": "node scripts/gen-cert.mjs"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "selfsigned": "^2.4.1"
+  }
+}

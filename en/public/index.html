@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poultry shop · Online store</title>
+<style>
+  :root{
+    --bg:#fbf7f2; --card:#ffffff; --ink:#2a2320; --muted:#8a7d74; --line:#ece3d9;
+    --accent:#d1462f; --accent-dark:#b23a26; --green:#2f8f5b; --amber:#b6791f; --wpp:#25d366;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  header{background:linear-gradient(180deg,#fff,#fbf7f2);border-bottom:1px solid var(--line)}
+  .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-family:var(--serif);font-weight:700;font-size:1.3rem}
+  .logo .dot{color:var(--accent)}
+  .navbtns{display:flex;gap:10px;align-items:center}
+  .hero{padding:22px 0 26px;display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:flex-end}
+  .hero .info h1{font-family:var(--serif);font-size:1.9rem;margin:0 0 8px}
+  .hero .info p{margin:2px 0;color:var(--muted);font-size:.94rem}
+  .hero .actions{display:flex;gap:10px;flex-wrap:wrap}
+
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 16px;font:inherit;font-weight:600;font-size:.9rem;cursor:pointer}
+  .btn:hover{background:var(--accent-dark)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:500}
+  .btn.wpp{background:var(--wpp);color:#053}
+  .btn.sm{padding:7px 12px;font-size:.84rem;border-radius:8px}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  main{padding:8px 0 60px;display:grid;grid-template-columns:1fr 340px;gap:26px}
+  @media(max-width:860px){main{grid-template-columns:1fr}}
+  h2.sec{font-family:var(--serif);font-size:1.4rem;margin:10px 0 14px}
+
+  .products{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media(max-width:560px){.products{grid-template-columns:1fr}}
+  .prod{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px;display:flex;flex-direction:column;gap:6px}
+  .prod h3{margin:0;font-size:1.05rem}
+  .prod .price{font-weight:700;font-size:1.15rem}
+  .prod .unit{color:var(--muted);font-weight:500;font-size:.85rem}
+  .prod .desc{color:var(--muted);font-size:.86rem;flex:1}
+  .prod .add{display:flex;gap:8px;align-items:center;margin-top:6px}
+  .prod .add input{width:74px;border:1px solid var(--line);border-radius:8px;padding:7px 8px;font:inherit}
+  .prod.off{opacity:.55}
+  .prod .pimg{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:4px;background:#f2ece4}
+  .prod .pimg.ph{display:flex;align-items:center;justify-content:center;color:#c9bcae;font-size:2rem}
+  .tagoff{font-size:.72rem;color:var(--amber);background:#fdf4e3;border-radius:6px;padding:2px 8px;align-self:flex-start}
+
+  /* Cart / account */
+  aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:column;gap:16px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .panel h3{margin:0 0 12px;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .cart-item{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:.9rem}
+  .cart-item .x{color:var(--accent);cursor:pointer;border:none;background:none;font-size:1rem}
+  .sum-row{display:flex;justify-content:space-between;font-size:.9rem;margin-top:6px}
+  .sum-row.promo{color:var(--green);font-weight:600}
+  .cart-total{display:flex;justify-content:space-between;font-weight:700;font-size:1.1rem;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+  .promo-banner{background:#eafaf0;border-color:#c7ecd5;color:#1c6b40;font-weight:600;font-size:.92rem;padding:12px 16px}
+  .muted{color:var(--muted)} .empty{color:var(--muted);font-size:.9rem;text-align:center;padding:14px 0}
+  label{display:block;font-size:.8rem;color:var(--muted);margin:10px 0 4px}
+  input,textarea,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit;font-size:.9rem;background:#fff}
+  textarea{resize:vertical;min-height:56px}
+  .msg{font-size:.86rem;margin-top:10px;min-height:1.1em}
+  .msg.ok{color:var(--green)} .msg.err{color:#c0392b}
+  .field-err{color:#c0392b;font-size:.78rem;margin-top:3px;min-height:.9em}
+
+  .orders .order{border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:10px;font-size:.86rem}
+  .chip{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:999px;border:1px solid var(--line)}
+  .chip.pending{color:var(--amber);background:#fdf4e3}
+  .chip.confirmed{color:#2563eb;background:#eef4ff}
+  .chip.in_transit{color:#7c3aed;background:#f3ecff}
+  .chip.delivered{color:var(--green);background:#eafaf0}
+  .chip.cancelled{color:#b91c1c;background:#fdecec}
+
+  /* Auth modal */
+  .overlay{position:fixed;inset:0;background:rgba(42,35,32,.45);display:none;align-items:flex-start;justify-content:center;padding:7vh 16px;z-index:30;overflow:auto}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:16px;width:100%;max-width:420px;padding:24px}
+  .modal h2{font-family:var(--serif);margin:0 0 4px}
+  .modal .tabs2{display:flex;gap:8px;margin:12px 0}
+  .modal .tab2{flex:1;text-align:center;padding:8px;border:1px solid var(--line);border-radius:9px;cursor:pointer;color:var(--muted);font-size:.9rem}
+  .modal .tab2.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .foothint{color:var(--muted);font-size:.82rem;margin-top:14px;text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="bar">
+      <div class="logo">Poultry<span class="dot">.</span> <span id="logoName"></span></div>
+      <div class="navbtns" id="navAuth">
+        <button class="btn ghost sm" onclick="openAuth('login')">Log in</button>
+        <button class="btn sm" onclick="openAuth('register')">Create account</button>
+      </div>
+    </div>
+    <div class="hero">
+      <div class="info">
+        <h1 id="shopName">Poultry shop</h1>
+        <p id="shopAddr"></p>
+        <p id="shopHours"></p>
+        <p id="shopNotes" class="muted"></p>
+      </div>
+      <div class="actions">
+        <a id="wppBtn" class="btn wpp" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <a id="mailBtn" class="btn ghost">✉️ Send email</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h2 class="sec">Our products</h2>
+    <div class="products" id="products"><p class="empty">Loading products…</p></div>
+  </section>
+
+  <aside>
+    <div class="panel promo-banner" id="promoBanner" style="display:none">
+      🎉 <span id="promoText"></span>
+    </div>
+    <div class="panel">
+      <h3>Your order</h3>
+      <div id="cartItems"><p class="empty">You haven't added any products yet.</p></div>
+      <div id="cartSummary" style="display:none">
+        <div class="sum-row"><span>Subtotal</span><span id="cartSubtotal">$0</span></div>
+        <div class="sum-row promo" id="cartDiscountRow" style="display:none"><span id="cartDiscountLabel">Discount</span><span id="cartDiscount">-$0</span></div>
+        <div class="sum-row" id="cartFaltaRow" style="display:none"><span class="muted" id="cartFalta"></span></div>
+        <div class="cart-total"><span>Total</span><span id="cartTotal">$0</span></div>
+      </div>
+      <div id="checkout" style="display:none">
+        <label>Shipping address</label>
+        <input id="shipAddress" placeholder="Street, number, city">
+        <div class="field-err" data-for="shippingAddress"></div>
+        <label>Contact phone</label>
+        <input id="shipPhone" placeholder="To arrange the delivery">
+        <label>Notes (optional)</label>
+        <textarea id="shipNotes" placeholder="E.g. buzzer 2, deliver in the afternoon"></textarea>
+        <button class="btn" style="width:100%;margin-top:12px" id="placeBtn" onclick="placeOrder()">Confirm order</button>
+        <div class="msg" id="orderMsg"></div>
+        <p class="foothint" id="loginHint" style="display:none">You need to <a href="#" onclick="openAuth('login');return false">log in</a> to confirm.</p>
+      </div>
+    </div>
+
+    <div class="panel orders" id="ordersPanel" style="display:none">
+      <h3>My orders</h3>
+      <div id="ordersList"><p class="empty">No orders yet.</p></div>
+    </div>
+  </aside>
+</main>
+
+<!-- Login/registration modal -->
+<div class="overlay" id="authOverlay">
+  <div class="modal">
+    <h2 id="authTitle">Log in</h2>
+    <div class="tabs2">
+      <div class="tab2" data-m="login" onclick="setAuthMode('login')">Log in</div>
+      <div class="tab2" data-m="register" onclick="setAuthMode('register')">Create account</div>
+    </div>
+    <div id="regFields" style="display:none">
+      <label>Full name</label>
+      <input id="auName" placeholder="E.g. John Smith"><div class="field-err" data-for="name"></div>
+      <label>Phone</label>
+      <input id="auPhone" type="tel" inputmode="tel" placeholder="E.g. 11 2233-4455"><div class="field-err" data-for="phone"></div>
+      <label>Address (for deliveries)</label>
+      <input id="auAddress" placeholder="Street, number, city">
+    </div>
+    <label>Email</label>
+    <input id="auEmail" type="email" inputmode="email" placeholder="name@mail.com"><div class="field-err" data-for="email"></div>
+    <label>Password</label>
+    <input id="auPassword" type="password" placeholder="min. 8 characters with letters and numbers">
+    <div class="field-err" data-for="password"></div>
+    <button class="btn" style="width:100%;margin-top:16px" id="authBtn" onclick="submitAuth()">Log in</button>
+    <div class="msg" id="authMsg"></div>
+    <p class="foothint"><a href="#" onclick="closeAuth();return false">Close</a></p>
+  </div>
+</div>
+
+<script>
+  const API = '/api/v1';
+  let token = null, me = null, authMode = 'login';
+  const cart = []; // { productId, name, unit, price, qty }
+  let products = [];
+  let promo = { threshold: 15000, rate: 0.10, description: '' };
+
+  // ---------- Initial load ----------
+  async function init(){
+    await Promise.all([loadShop(), loadProducts(), loadPromo()]);
+  }
+  async function loadPromo(){
+    try{
+      const { data } = await (await fetch(`${API}/orders/promo`)).json();
+      if(data){ promo = data;
+        document.getElementById('promoText').textContent = data.description || '';
+        document.getElementById('promoBanner').style.display = data.description ? 'block':'none';
+      }
+    }catch(e){}
+  }
+  async function loadShop(){
+    try{
+      const { data:s } = await (await fetch(`${API}/shop`)).json();
+      if(!s) return;
+      document.getElementById('shopName').textContent = s.name || 'Poultry shop';
+      document.getElementById('logoName').textContent = '';
+      document.getElementById('shopAddr').textContent = s.address || '';
+      document.getElementById('shopHours').textContent = s.hours || '';
+      document.getElementById('shopNotes').textContent = s.notes || '';
+      if(s.whatsapp){
+        const txt = encodeURIComponent('Hi! I would like to place an order.');
+        document.getElementById('wppBtn').href = `https://wa.me/${s.whatsapp}?text=${txt}`;
+      } else document.getElementById('wppBtn').style.display='none';
+      document.getElementById('mailBtn').href = s.email ? `mailto:${s.email}` : '#';
+      if(!s.email) document.getElementById('mailBtn').style.display='none';
+    }catch(e){}
+  }
+  async function loadProducts(){
+    const box = document.getElementById('products');
+    try{
+      const { data } = await (await fetch(`${API}/products`)).json();
+      products = data || [];
+      if(!products.length){ box.innerHTML='<p class="empty">We will add products soon.</p>'; return; }
+      box.innerHTML = products.map(prodHTML).join('');
+    }catch(e){ box.innerHTML='<p class="empty">The products could not be loaded.</p>'; }
+  }
+  function prodHTML(p){
+    const off = !p.available;
+    const img = p.image
+      ? `<img class="pimg" src="${p.image}" alt="${esc(p.name)}">`
+      : `<div class="pimg ph">🍗</div>`;
+    return `<div class="prod ${off?'off':''}">
+      ${img}
+      <h3>${esc(p.name)}</h3>
+      <div class="price">${money(p.price)} <span class="unit">/ ${esc(p.unit)}</span></div>
+      <div class="desc">${esc(p.description||'')}</div>
+      ${off ? '<span class="tagoff">Not available</span>' :
+        `<div class="add">
+          <input type="number" min="0.25" step="0.25" value="1" id="qty-${p.id}">
+          <button class="btn sm" onclick="addToCart(${p.id})">Add</button>
+        </div>`}
+    </div>`;
+  }
+
+  // ---------- Cart ----------
+  function addToCart(id){
+    const p = products.find(x=>x.id===id); if(!p) return;
+    const qty = Math.max(0.25, Number(document.getElementById('qty-'+id).value)||1);
+    const ex = cart.find(c=>c.productId===id);
+    if(ex) ex.qty += qty; else cart.push({ productId:id, name:p.name, unit:p.unit, price:p.price, qty });
+    renderCart();
+  }
+  function removeFromCart(id){ const i=cart.findIndex(c=>c.productId===id); if(i>=0) cart.splice(i,1); renderCart(); }
+  function renderCart(){
+    const box = document.getElementById('cartItems');
+    if(!cart.length){
+      box.innerHTML='<p class="empty">You haven\'t added any products yet.</p>';
+      document.getElementById('cartSummary').style.display='none';
+      document.getElementById('checkout').style.display='none';
+      return;
+    }
+    box.innerHTML = cart.map(c=>`<div class="cart-item">
+      <span>${esc(c.name)}<br><span class="muted">${c.qty} ${esc(c.unit)} × ${money(c.price)}</span></span>
+      <span>${money(c.price*c.qty)} <button class="x" title="Remove" onclick="removeFromCart(${c.productId})">✕</button></span>
+    </div>`).join('');
+
+    // Summary with the promo (same calculation the server does).
+    const subtotal = cart.reduce((s,c)=>s+c.price*c.qty,0);
+    const applies = subtotal >= promo.threshold;
+    const discount = applies ? Math.round(subtotal*promo.rate*100)/100 : 0;
+    const total = subtotal - discount;
+    document.getElementById('cartSubtotal').textContent = money(subtotal);
+    document.getElementById('cartTotal').textContent = money(total);
+    const discRow = document.getElementById('cartDiscountRow');
+    const faltaRow = document.getElementById('cartFaltaRow');
+    if(applies){
+      discRow.style.display='flex'; faltaRow.style.display='none';
+      document.getElementById('cartDiscountLabel').textContent = `Discount (${Math.round(promo.rate*100)}%)`;
+      document.getElementById('cartDiscount').textContent = '-'+money(discount);
+    } else {
+      discRow.style.display='none';
+      faltaRow.style.display='flex';
+      document.getElementById('cartFalta').textContent = `You need ${money(promo.threshold - subtotal)} more for the ${Math.round(promo.rate*100)}% discount`;
+    }
+    document.getElementById('cartSummary').style.display='block';
+    document.getElementById('checkout').style.display='block';
+    document.getElementById('loginHint').style.display = token ? 'none' : 'block';
+    document.getElementById('placeBtn').textContent = token ? 'Confirm order' : 'Log in to confirm';
+  }
+
+  async function placeOrder(){
+    clearErrors();
+    const msg = document.getElementById('orderMsg'); msg.className='msg';
+    // Session gate: if not logged in, we open the login (and the server also requires it).
+    if(!token){ openAuth('login'); return; }
+    const payload = {
+      items: cart.map(c=>({ productId:c.productId, qty:c.qty })),
+      shippingAddress: val('shipAddress'), contactPhone: val('shipPhone'), notes: val('shipNotes'),
+    };
+    msg.textContent='Sending order…';
+    document.getElementById('placeBtn').disabled=true;
+    try{
+      const res = await fetch(`${API}/orders`, { method:'POST', headers:auth(true), body:JSON.stringify(payload) });
+      const data = await res.json().catch(()=>({}));
+      if(res.status===201){
+        cart.length=0; renderCart();
+        const o = data.data;
+        const promoTxt = o.promoApplied ? ` (with ${Math.round(promo.rate*100)}% discount applied 🎉)` : '';
+        msg.className='msg ok'; msg.textContent=`Order #${o.id} received! Total ${money(o.total)}${promoTxt}.`;
+        loadOrders();
+      }else if(res.status===422 && Array.isArray(data.errors)){
+        data.errors.forEach(fe=>showErr(fe.field, fe.message));
+        msg.className='msg err'; msg.textContent='Please review the order details.';
+      }else{ msg.className='msg err'; msg.textContent=data.detail||'The order could not be sent.'; }
+    }catch(e){ msg.className='msg err'; msg.textContent='Could not connect.'; }
+    finally{ document.getElementById('placeBtn').disabled=false; }
+  }
+
+  // ---------- Auth ----------
+  function openAuth(mode){ setAuthMode(mode); document.getElementById('authOverlay').classList.add('open'); }
+  function closeAuth(){ document.getElementById('authOverlay').classList.remove('open'); document.getElementById('authMsg').textContent=''; clearErrors(); }
+  function setAuthMode(mode){
+    authMode = mode;
+    document.querySelectorAll('.tab2').forEach(t=>t.classList.toggle('active', t.dataset.m===mode));
+    document.getElementById('regFields').style.display = mode==='register' ? 'block':'none';
+    document.getElementById('authTitle').textContent = mode==='register' ? 'Create account' : 'Log in';
+    document.getElementById('authBtn').textContent = mode==='register' ? 'Create account' : 'Log in';
+  }
+  // Browser-side validation before sending (in addition to the server's).
+  const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  function validateRegisterClient(){
+    let ok = true;
+    const email = val('auEmail'), pw = val('auPassword');
+    const name = val('auName'), phone = val('auPhone');
+    if(name.length < 2 || !/\p{L}/u.test(name)){ showErr('name','enter your first and last name'); ok=false; }
+    if(!EMAIL_RE.test(email)){ showErr('email','enter a valid email (e.g. name@mail.com)'); ok=false; }
+    const digits = phone.replace(/[^0-9]/g,'');
+    if(!phone){ showErr('phone','enter a contact phone number'); ok=false; }
+    else if(!/^[0-9()+\s-]+$/.test(phone)){ showErr('phone','use only numbers and + ( ) - spaces'); ok=false; }
+    else if(digits.length < 8 || digits.length > 15){ showErr('phone','between 8 and 15 digits (e.g. 11 2233-4455)'); ok=false; }
+    if(pw.length < 8 || !/[A-Za-z]/.test(pw) || !/[0-9]/.test(pw)){ showErr('password','min. 8 characters, with letters and numbers'); ok=false; }
+    return ok;
+  }
+
+  async function submitAuth(){
+    clearErrors();
+    const msg = document.getElementById('authMsg'); msg.className='msg';
+    if(authMode==='register' && !validateRegisterClient()){ msg.className='msg err'; msg.textContent='Please review the highlighted fields.'; return; }
+    msg.textContent='Processing…';
+    const body = { email: val('auEmail'), password: val('auPassword') };
+    let url = `${API}/auth/login`;
+    if(authMode==='register'){
+      url = `${API}/auth/register`;
+      body.name = val('auName'); body.phone = val('auPhone'); body.address = val('auAddress');
+    }
+    try{
+      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      const data = await res.json().catch(()=>({}));
+      if((res.status===200||res.status===201) && data.accessToken){
+        token = data.accessToken; me = data.user; onLogged();
+        closeAuth();
+      }else if(res.status===422 && Array.isArray(data.errors)){
+        data.errors.forEach(fe=>showErr(fe.field, fe.message)); msg.className='msg err'; msg.textContent='Please review the fields.';
+      }else if(res.status===401){ msg.className='msg err'; msg.textContent='Incorrect email or password.'; }
+      else if(res.status===409){ msg.className='msg err'; msg.textContent='An account with that email already exists.'; }
+      else{ msg.className='msg err'; msg.textContent=data.detail||'Could not complete.'; }
+    }catch(e){ msg.className='msg err'; msg.textContent='Could not connect.'; }
+  }
+  function onLogged(){
+    document.getElementById('navAuth').innerHTML =
+      `<span class="muted" style="font-size:.9rem">Hi, ${esc(me.name||me.email)}</span>
+       <button class="btn ghost sm" onclick="logout()">Log out</button>`;
+    if(me.role==='admin'){
+      document.getElementById('navAuth').insertAdjacentHTML('afterbegin',
+        '<a class="btn ghost sm" href="/admin.html">Admin panel</a>');
+    }
+    // Prefill shipping address with the profile's one
+    if(me && !val('shipAddress')) loadProfileIntoCheckout();
+    document.getElementById('ordersPanel').style.display='block';
+    renderCart(); loadOrders();
+  }
+  async function loadProfileIntoCheckout(){
+    try{ const { data } = await (await fetch(`${API}/auth/me`, {headers:auth()})).json();
+      if(data){ if(data.address) document.getElementById('shipAddress').value=data.address;
+        if(data.phone) document.getElementById('shipPhone').value=data.phone; }
+    }catch(e){}
+  }
+  function logout(){
+    token=null; me=null;
+    document.getElementById('navAuth').innerHTML =
+      `<button class="btn ghost sm" onclick="openAuth('login')">Log in</button>
+       <button class="btn sm" onclick="openAuth('register')">Create account</button>`;
+    document.getElementById('ordersPanel').style.display='none';
+    renderCart();
+  }
+
+  async function loadOrders(){
+    if(!token) return;
+    const box = document.getElementById('ordersList');
+    try{
+      const { data } = await (await fetch(`${API}/orders?pageSize=20`, {headers:auth()})).json();
+      if(!data || !data.length){ box.innerHTML='<p class="empty">No orders yet.</p>'; return; }
+      box.innerHTML = data.map(o=>`<div class="order">
+        <div style="display:flex;justify-content:space-between">
+          <strong>Order #${o.id}</strong>
+          <span class="chip ${o.status}">${o.status.replace('_',' ')}</span>
+        </div>
+        <div class="muted">${o.items.map(i=>`${i.qty} ${esc(i.unit)} ${esc(i.name)}`).join(', ')}</div>
+        <div style="margin-top:4px"><strong>${money(o.total)}</strong>${o.discount>0?` <span style="color:var(--green);font-size:.82rem">(${money(o.discount)} off)</span>`:''} · ${esc(o.shippingAddress)}</div>
+      </div>`).join('');
+    }catch(e){ box.innerHTML='<p class="empty">The orders could not be loaded.</p>'; }
+  }
+
+  // ---------- utils ----------
+  function auth(json){ const h = token?{'Authorization':'Bearer '+token}:{}; if(json) h['Content-Type']='application/json'; return h; }
+  function val(id){ return document.getElementById(id).value.trim(); }
+  function money(n){ return '$' + Number(n||0).toLocaleString('en-US'); }
+  function showErr(f,m){ const el=document.querySelector(`.field-err[data-for="${f}"]`); if(el) el.textContent=m; }
+  function clearErrors(){ document.querySelectorAll('.field-err').forEach(e=>e.textContent=''); }
+  function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  init();
+</script>
+</body>
+</html>
